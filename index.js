@@ -127,8 +127,8 @@ app.get('/movies', (req, res) => {
     res.status(200).json(movies).send('');
 });
 
-// READ: Get movies by tile.
-app.get('movies/:tile', (req, res) => {
+// READ: Get movies by title.
+app.get('movies/:title', (req, res) => {
     res.status(200).send('Successful GET request returning movie(s) by tile.');
 });
 
