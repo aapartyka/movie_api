@@ -39,11 +39,8 @@ let users = [
 let movies = [
     {
         title: 'Shutter Island',
-        genre: {
-            name: 'Psycho-Thriller',
-        },
         director: 'Martin Scorsese',
-        description: 'Add description here :D1'
+        description: 'Add description here :D1',
     },
     {
         title: 'Ex Machina',
@@ -95,6 +92,7 @@ let movies = [
 // Routing.
 // CREATE: Create new user.
 app.post('/users', (req, res) => {
+    res.send('Successful POST request, test user have been created');
     let newUser = req.body;
 
     if (!newUser.name) {
@@ -129,16 +127,26 @@ app.get('/movies', (req, res) => {
 
 // READ: Get movies by title.
 app.get('movies/:title', (req, res) => {
-    res.status(200).send('Successful GET request returning movie(s) by tile.');
+    /* let {title} = req.params;
+    let movie = movies.find((movie) => movie.title === title);
+
+    if (movie) {
+        res.status(200).json('Successful GET request returning movie(s) by title.' + movie);
+    } 
+    else {
+        res.status(404).send("no such movie");
+    } */
+    res.status(200).send('Successful GET request returning movie(s) by title.');
 });
 
 // READ: Get movies by genre.
-app.get('movies/:genre', (req, res) => {
+app.get('movies/genre/:genre', (req, res) => {
     res.status(200).send('Successful GET request returning movie(s) by genre.');
 });
 
 // READ: Get movies by director.
-app.get('movies/:directors', (req, res) => {
+app.get('movies/directors/:directors', (req, res) => {
+    
     res.status(200).send('Successful GET request returning movie(s) by director.');
 });
 
