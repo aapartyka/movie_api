@@ -1,6 +1,5 @@
 // Importing the modules: express, morgan, body-parser, uuid.
 const express = require('express');
-const req = require('express/lib/request');
 const morgan = require('morgan');
 bodyParser = require('body-parser');
 uuid = require('uuid');
@@ -19,18 +18,17 @@ let users = [
     {
         id: 1,
         name: 'Arno',
-        favoriteMovies: 'Shutter Island'
+        favoriteMovies: ['Shutter Island']
     },
     {
         id: 2,
         name: 'Blaise',
-        favoriteMovies: 'We will never know'
+        favoriteMovies: ['We will never know']
     },
     {
         id: 3,
         name: 'Ramadhan',
-        favoriteMovies: 'Maybe I ask him later'
-
+        favoriteMovies: ['Maybe I ask him later']
     }
 ]
 
@@ -38,78 +36,92 @@ let users = [
 // Array which contains the movies and their information.
 let movies = [
     {
-        title: 'Shutter Island',
-        director: 'Martin Scorsese',
-        description: 'Add description here :D1',
+        Title: 'Shutter Island',
+        Genre: 'Thriller',
+        Director: 'Martin Scorsese',
+        Description: 'Add description here :D1',
     },
     {
-        title: 'Ex Machina',
-        director: 'Alex Garland',
-        description: 'Add description here :D2'
+        Title: 'Ex Machina',
+        Genre: 'testGenre',
+        Director: 'Alex Garland',
+        Description: 'Add description here :D2'
     },
     {
-        title: 'The Dark Knight',
-        director: 'Christopher Nolan',
-        description: 'Add description here :D3'
+        Title: 'The Dark Knight',
+        Genre: 'testGenre',
+        Director: 'Christopher Nolan',
+        Description: 'Add description here :D3'
     },
     {
-        title: 'The Shawshank Redemption',
-        director: 'Stephen King',
-        description: 'Add description here :D4'
+        Title: 'The Shawshank Redemption',
+        Genre: 'testGenre',
+        Director: 'Stephen King',
+        Description: 'Add description here :D4'
     },
     {
-        title: 'Pulp Fiction',
-        director: 'Quentin Tarantino',
-        description: 'Add description here :D5'
+        Title: 'Pulp Fiction',
+        Genre: 'testGenre',
+        Director: 'Quentin Tarantino',
+        Description: 'Add description here :D5'
     },
     {
-        title: 'The Pianist',
-        director: 'Roman Polanski',
-        description: 'Add description here :D6'
+        Title: 'The Pianist',
+        Genre: 'testGenre',
+        Director: 'Roman Polanski',
+        Description: 'Add description here :D6'
     },
     {
-        title: 'Lord of the Rings The Fellowship of the Ring',
-        director: 'Peter Jackson',
-        description: 'Add description here :D7'
+        Title: 'Lord of the Rings The Fellowship of the Ring',
+        Genre: 'testGenre',
+        Director: 'Peter Jackson',
+        Description: 'Add description here :D7'
     },
     {
-        title: 'Forrest Gump',
-        director: 'Robert Zemeckis',
-        description: 'Add description here :D8'
+        Title: 'Forrest Gump',
+        Genre: 'testGenre',
+        Director: 'Robert Zemeckis',
+        Description: 'Add description here :D8'
     },
     {
-        title: 'The Godfather',
-        director: 'Francis Ford Coppola',
-        description: 'Add description here :D9'
+        Title: 'The Godfather',
+        Genre: 'testGenre',
+        Director: 'Francis Ford Coppola',
+        Description: 'Add description here :D9'
     },
     {
-        title: 'Star Wars V - The Empire Strikes back',
-        director: 'Irvin Kershner',
-        description: 'Add description here :D10'
+        Title: 'Star Wars V - The Empire Strikes back',
+        Genre: 'testGenre',
+        Director: 'Irvin Kershner',
+        Description: 'Add description here :D10'
     }
 ];
 
 // Routing.
 // CREATE: Create new user.
 app.post('/users', (req, res) => {
-    res.send('Successful POST request, test user have been created');
-    let newUser = req.body;
+    const newUser = req.body;
 
-    if (!newUser.name) {
-        const message = 'Missing name in request body';
-        req.status(400).send(message);
-    } else {
+    if (newUser) {
         newUser.id = uuid.v4();
         users.push(newUser);
-        res.status(201).send(newUser);
+        res.status(201).json(newUser);
+    } else {
+        res.status(400).send('A users need a name.');
     }
 });
 
 // CREATE: Create new favorite movie of a user.
 app.post('/users/:id/:movieTitle', (req, res) => {
-    // add the favoriteMovie
-    // if(!NewMovie) => res.status(400).send('New movie had not been created!')
-    res.status(201).send('Movie was created successfully!')
+    const { id, movieTitle } = req.params;
+    let user = users.find( user => user.id == id );
+
+    if (user) {
+        user.favoriteMovies.push(movieTitle);
+        res.status(200).send(`${movieTitle} has been added to ${id}'s movies!`);
+    } else {
+        res.status(400).send('No user with that ID.');
+    }
 });
 
 // READ.
@@ -122,54 +134,66 @@ app.use(express.static('public'));
 
 // READ: Get all movies
 app.get('/movies', (req, res) => {
-    res.status(200).json(movies).send('');
-});
+    res.status(200).json(movies);
+})
 
 // READ: Get movies by title.
-app.get('movies/:title', (req, res) => {
-    /* let {title} = req.params;
-    let movie = movies.find((movie) => movie.title === title);
+app.get('/movies/:title', (req, res) => {
+    const { title } = req.params;
+    const movie = movies.find ( movie => movie.Title === title );
 
     if (movie) {
-        res.status(200).json('Successful GET request returning movie(s) by title.' + movie);
-    } 
-    else {
-        res.status(404).send("no such movie");
-    } */
-    res.status(200).send('Successful GET request returning movie(s) by title.');
-});
+        res.status(200).json(movie);
+    } else {
+        res.status(400).send('There is no movie with such title.');
+    }
+})
 
 // READ: Get movies by genre.
-app.get('movies/genre/:genre', (req, res) => {
-    res.status(200).send('Successful GET request returning movie(s) by genre.');
-});
+app.get('/movies/genres/:genreName', (req, res) => {
+    const { genreName } = req.params;
+    const genre = movies.find ( movie => movie.Genre === genreName);
+
+    if (genre) {
+        res.status(200).json(genre);
+    } else {
+        res.status(400).send('There is no ge with such name.');
+    }
+})
 
 // READ: Get movies by director.
-app.get('movies/directors/:directors', (req, res) => {
-    
-    res.status(200).send('Successful GET request returning movie(s) by director.');
-});
+app.get('/movies/directors/:directorName', (req, res) => {
+    console.log('test');
+    const { directorName } = req.params;
+    const director = movies.find ( movie => movie.Director === directorName );
+
+    if (director) {
+        res.status(200).json(director);
+    } else {
+        res.status(400).send('There is no director with such name.');
+    }
+})
 
 // UPDATE: Update user information.
 app.put('/users/:id', (req, res) => {
     res.status(200).send('Successful updated user information.');
-});
+})
 
 // DELETE: Delete user.
 app.delete('/users/:id', (req, res) => {
     res.status(200).send('Successful DELETE request for the user.');
-});
+})
 
 // DELETE: Delete/remove movie from the user's favorites list.
-app.delete('users/:id/:movieTitle', (req, res) => {
+app.delete('/users/:id/:movieTitle', (req, res) => {
     res.status(200).send('Successful DELETE reques for the favorite movie of the user.');
-});
+})
 
 //Erorr logging
 app.use((err, req, res, next) => {
     console.log(err.stack);
     res.status(500).send('Something is not working!');
-})
+});
 
 //listen for requests
 app.listen(8080, () => {
