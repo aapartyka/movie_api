@@ -174,20 +174,48 @@ app.get('/movies/directors/:directorName', (req, res) => {
     }
 })
 
-// UPDATE: Update user information.
+// UPDATE: Update user information by id.
 app.put('/users/:id', (req, res) => {
-    res.status(200).send('Successful updated user information.');
-})
+    const { id } = req.params;
+    const updatedUser = req.body;
+    let user = users.find(user => user.id == id);
+
+    if (user) {
+        user.name = updatedUser.name;
+        // status code 200 = OK
+        res.status(200).json(user);
+    } else {
+        res.status(400).send('no such user');
+    }
+});
 
 // DELETE: Delete user.
 app.delete('/users/:id', (req, res) => {
-    res.status(200).send('Successful DELETE request for the user.');
-})
+    const { id } = req.params;
+    let user = users.find(user => user.id == id);
+
+    if (user) {
+        users = users.filter(user => user.id != id)
+        // status code 200 = OK
+        res.status(200).send(`${user.name} has been deleted`);
+    } else {
+        res.status(400).send('no such user');
+    }
+});
 
 // DELETE: Delete/remove movie from the user's favorites list.
 app.delete('/users/:id/:movieTitle', (req, res) => {
-    res.status(200).send('Successful DELETE reques for the favorite movie of the user.');
-})
+    const { id, movieTitle } = req.params;
+    let user = users.find(user => user.id == id);
+
+    if (user) {
+        user.toWatch = user.toWatch.filter(title => title !==  movieTitle);
+        // status code 200 = OK
+        res.status(200).send(`${movieTitle} has been removed from ${user.name}'s array`);
+    } else {
+        res.status(400).send('no such user');
+    }
+});
 
 //Erorr logging
 app.use((err, req, res, next) => {
