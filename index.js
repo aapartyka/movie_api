@@ -1,4 +1,6 @@
-// Importing the modules: express, morgan, body-parser, uuid.
+// Importing the modules: mongoose, express, morgan, body-parser, uuid.
+const mongoose = require('mongoose');
+const Models = require('./models.js');
 const express = require('express');
 const morgan = require('morgan');
 bodyParser = require('body-parser');
@@ -12,6 +14,11 @@ app.use(morgan('common'));
 
 // Parse incoming request bodies in the middleware.
 app.use(bodyParser.json());
+
+const Movies = Models.movie;
+const Users = Models.user;
+
+mongoose.connect('mongodb://localhost:27017/myFix', {useNewUrlParser: true, useUnifiedToplogy: true});
 
 // array with the user and their information.
 let users = [
