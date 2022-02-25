@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Models = require('./models.js');
 const express = require('express');
 const morgan = require('morgan');
+const { get } = require('express/lib/response');
 bodyParser = require('body-parser');
 uuid = require('uuid');
 
@@ -167,6 +168,24 @@ app.get('/movies/genres/:genreName', (req, res) => {
         res.status(400).send('There is no ge with such name.');
     }
 })
+
+//READ: Get all users.
+app.get('/users', (req, res) => {
+    Users.find().then
+    .then((users) => {
+        res.status(201).json(users);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).send('Error' + err);
+    });
+});
+
+// READ: Get User by Username.
+app.get('/users/:username', (req, res) => {
+    //logic
+});
+
 
 // READ: Get movies by director.
 app.get('/movies/directors/:directorName', (req, res) => {
