@@ -106,18 +106,32 @@ let movies = [
 ];
 
 // Routing.
-// CREATE: Create new user.
+//Create: new User
 app.post('/users', (req, res) => {
-    const newUser = req.body;
-
-    if (newUser) {
-        newUser.id = uuid.v4();
-        users.push(newUser);
-        res.status(201).json(newUser);
-    } else {
-        res.status(400).send('A users need a name.');
-    }
-});
+    Users.findOne({ Username: req.body.Username })
+      .then((user) => {
+        if (user) {
+          return res.status(400).send(req.body.Username + 'already exists');
+        } else {
+          Users
+            .create({
+              Username: req.body.Username,
+              Password: req.body.Password,
+              Email: req.body.Email,
+              Birthday: req.body.Birthday
+            })
+            .then((user) =>{res.status(201).json(user) })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+          })
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  });
 
 // CREATE: Create new favorite movie of a user.
 app.post('/users/:id/:movieTitle', (req, res) => {
@@ -181,10 +195,17 @@ app.get('/users', (req, res) => {
     });
 });
 
-// READ: Get User by Username.
-app.get('/users/:username', (req, res) => {
-    //logic
-});
+// READ: Get a user by username
+app.get('/users/:Username', (req, res) => {
+    Users.findOne({ Username: req.params.Username })
+      .then((user) => {
+        res.json(user);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
 
 
 // READ: Get movies by director.
