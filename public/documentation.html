@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <title>Document</title>
 </head>
 <body>
-    <h1>myFlix movie_api Documentation</h1>
-    <p>The endpoints sorted after the used HTTP method. POST, GET, PUT DELETE (CRUD). 
-    </p>
-      <div style="overflow-x: auto;">
-        <table>
+    <h1>myFlix</h1>
+    <p>The web application will provide users with access to information about different
+        movies, directors, and genres. Users will be able to sign up, update their
+        personal information, and create a list of their favorite movies.</p>
+
+        <table class="table table-bordered table-responsive">
+            <thead class="thead-light">
               <tr>
                 <th scope="col">Business Logic</th>
                 <th scope="col">URL</th>
@@ -19,91 +22,209 @@
                 <th scope="col">Request body data format</th>
                 <th scope="col">Response body data format</th>
               </tr>
+            </thead>
             <tbody>
+              <tr>
+                <th scope="row">Get a list of all users</th>
+                <td>/users</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about all users, structured like:<br>
+                {<br>
+                    "_id": "620ce8db85ae295fceef982d",<br>
+                    "Name": "Max Musterman",<br>
+                    "Password": "nfkdf-fjvmr-Katze",<br>
+                    "Email": "max.musterman",
+                    "Birthdate": "1950-01-01T00:00:00.000Z",<br>
+                    "favoriteMovies": [<br>
+                        "620cd67885ae295fceef9825",<br>
+                        "620cd68b85ae295fceef9827",<br>
+                        "620cd5c185ae295fceef981d"]<br>
+                  },<br>
+                  {<br>
+                    "_id": "620ce8f185ae295fceef982f",<br>
+                    "Name": "Jane Doe",<br>
+                    "Password": "Hirschkuh",<br>
+                    "Email": "jane.doe@wow.no",<br>
+                    "Birthdate": "1995-11-26T00:00:00.000Z",<br>
+                    "favoriteMovies": []<br>
+                }</td>
+              </tr>
               <tr>
                 <th scope="row">Add a user</th>
                 <td>/users</td>
                 <td>POST</td>
-                <td>A JSON object holding data about a user to add, structured like:<br>
-                    {   <br>
-                        "name": "Arno"<br>
-                    }</td>
-                <td>A JSON object holding data about user that was added, including an ID:<br>
-                    {   <br>
-                        id: 1,<br>
-                        name: "Arno",<br>
-                        favoriteMovies: []<br>
-
-                    }</td>
+                <td>A JSON object holding data about a user to add, structured like:
+                  {<br>
+                    "Username": "testUser1",<br>
+                    "Password": "weakpw",<br>
+                    "Email": "testUser@gmail.com",<br>
+                    "Birthday": "1955-11-11",<br>
+                }
+                </td>
+                <td>A JSON object holding data about the user that has been just added, structured like:<br>
+                  {
+                    "_id": "61fa66df9526ff993d4b0ab6",
+                    "Username": "testUser1",
+                    "Password": "weakpw",
+                    "Email": "testUser@gmail.com",
+                    "Birthday": "1955-11-11T00:00:00.000Z",
+                    "FavoriteMovies": []
+                }</td>
               </tr>
               <tr>
-                <th scope="row">Add a movie to user's favorite movies array</th>
-                <td>/users/:id/:movieTitle</td>
-                <td>POST</td>
-                <td>none</td>
-                <td>A message indicating whether the movie was successfully added</td>
-              </tr>
-              <tr>
-                <th scope="row">Get a list of all movies</th>
-                <td>/movies</td>
-                <td>GET</td>
-                <td>none</td>
-                <td>A JSON object holding data about all the movies</td>
-              </tr>
-              <tr>
-                <th scope="row">Get data about a single movie by title</th>
-                <td>/movies/:title</td>
-                <td>GET</td>
-                <td>none</td>
-                <td>A JSON object holding data about the movie</td>
-              </tr>
-              <tr>
-                <th scope="row">Get data about a genre</th>
-                <td>/movies/genre/:genreName</td>
-                <td>GET</td>
-                <td>none</td>
-                <td>A JSON object holding data about the genre</td>
-              </tr>
-              <tr>
-                <th scope="row">Get data about a director</th>
-                <td>/movies/directors</td>
-                <td>GET</td>
-                <td>none</td>
-                <td>A JSON object holding data about the director</td>
-              </tr>
-              <tr>
-                <th scope="row">Find user by ID and update user name</th>
-                <td>/users/:id</td>
+                <th scope="row">Find user by username and update data</th>
+                <td>/users</td>
                 <td>PUT</td>
-                <td>A JSON object holding data about a user to change name, structured like:<br>
-                    {   <br>
-                        "name": "Arno"<br>
-                    }</td>
-                <td>A JSON object holding data about a user's changed name:<br>
-                    {   <br>
-                        id: 1,<br>
-                        name: "Arno",<br>
-                        favoriteMovies: []<br>
-
-                    }</td>
+                <td>A JSON object holding data about a user to change data, structured like:<br>
+                  {<br>
+                    "Username": "testUserPost",<br>
+                    "Password": "TestpwChanged",<br>
+                    "Email": "Test@email.com",<br>
+                    "Birthday": "1953-09-01",<br>
+                }</td>
+                <td>A JSON object holding data about users updated data, structured like:<br>
+                  {
+                    "_id": "61fa65249526ff993d4b0ab4",
+                    "Username": "testUserPost",
+                    "Password": "TestpwChanged",
+                    "Email": "Test@email.com",
+                    "Birthday": "1953-09-01T23:00:00.000Z",
+                    "FavoriteMovies": []
+                },</td>
               </tr>
               <tr>
-                <th scope="row">Remove a user by ID</th>
-                <td>/users/:id</td>
+                <th scope="row">Remove a user by username</th>
+                <td>/users/:Username</td>
                 <td>DELETE</td>
                 <td>none</td>
                 <td>A message indicating whether the user was successfully removed</td>
               </tr>
               <tr>
+                <th scope="row">Add a movie to user's favorite movies array</th>
+                <td>/users/:Username/movies/:MovieID</td>
+                <td>POST</td>
+                <td>none</td>
+                <td>A message indicating whether the movie was successfully added</td>
+              </tr>
+              <tr>
                 <th scope="row">Remove a movie from user's favorite movies array</th>
-                <td>/users/:id/:movieTitle</td>
+                <td>/users/:Username/movies/:MovieID</td>
                 <td>DELETE</td>
                 <td>none</td>
                 <td>A message indicating whether the movie was successfully removed</td>
               </tr>
-              
+              <tr>
+                <th scope="row">Return a list of all movies</th>
+                <td>/movies</td>
+                <td>GET</td>
+                <td>none</td>
+                <td>A JSON object holding data about all movies with a structure like:<br>
+                  [<br>
+                  {<br>
+                    "Genre": {<br>
+                        "Name": "Thriller",<br>
+                        "Description": "Thriller film, also known as suspense film or suspense thriller,<br>
+                         is a broad film genre that involves excitement and suspense in the audience.<br>
+                         Tension is created by delaying what the audience sees as inevitable, and is built through situations that are menacing or where escape seems impossible."<br>
+                    },<br>
+                    "Director": {<br>
+                        "Name": "Martin Scorsese",<br>
+                        "Bio": "Martin Scorsese is an American film director, producer and screenwriter. He is recipient of many accolades",<br>
+                        "Birth": "1942-11-17T00:00:00.000Z",<br>
+                        "Death": ""<br>
+                    },<br>
+                    "_id": "620cd5c185ae295fceef981d",<br>
+                    "Title": "Shutter Island",<br>
+                    "Description": "Shutter Island is a 2010 American neo-noir psychological thriller film directed by Martin Scorsese and written by Laeta Kalogridis, 
+                    based on Dennis Lehane's 2003 novel of the same name. Leonardo DiCaprio stars as Deputy U.S. Marshal Edward Teddy Daniels, 
+                    who is investigating a psychiatric facility on Shutter Island after one of the patients goes missing. 
+                    Mark Ruffalo plays his partner and fellow deputy marshal, Ben Kingsley is the facility's lead psychiatrist, Max von Sydow is a German doctor, 
+                    and Michelle Williams is Daniels' wife.",<br>
+                    "ImagePath": "https://www.imdb.com/title/tt1130884/mediaviewer/rm1814907136/?ref_=tt_ov_i",<br>
+                    "Featured": true<br>
+                },<br>
+                  {
+                      "Genre": {<br>
+                          "Name": "Thriller",<br>
+                          "Description": "Thriller film, also known as suspense film or suspense thriller,
+                           is a broad film genre that involves excitement and suspense in the audience. Tension is created by delaying what the audience sees as inevitable,
+                           and is built through situations that are menacing or where escape seems impossible."<br>
+                      },
+                      "Director": {<br>
+                          "Name": "Martin Scorsese",
+                          "Bio": "Martin Scorsese is an American film director, producer and screenwriter. He is recipient of many accolades",<br>
+                          "Birth": "1942-11-17T00:00:00.000Z",<br>
+                          "Death": ""<br>
+                      },
+                      "_id": "620cd5c185ae295fceef981d",<br>
+                      "Title": "Shutter Island",<br>
+                      "Description": "Shutter Island is a 2010 American neo-noir psychological thriller film directed by Martin Scorsese and written by Laeta Kalogridis, based on Dennis Lehane's 2003 novel of the same name. Leonardo DiCaprio stars as Deputy U.S. Marshal Edward Teddy Daniels, who is investigating a psychiatric facility on Shutter Island after one of the patients goes missing. Mark Ruffalo plays his partner and fellow deputy marshal, Ben Kingsley is the facility's lead psychiatrist, Max von Sydow is a German doctor, and Michelle Williams is Daniels' wife.",
+                      "ImagePath": "https://www.imdb.com/title/tt1130884/mediaviewer/rm1814907136/?ref_=tt_ov_i",<br>
+                      "Featured": true<br>
+                  },<br>
+                  ]
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Get data about a single movie by title</th>
+                <td>/movies/:Title</td>
+                <td>GET</td>
+                <td>none</td>
+                <td>A JSON object holding data about the movie like:<br>
+                  {<br>
+                    "Genre": {<br>
+                        "Name": "Thriller",<br>
+                        "Description": "Thriller film, also known as suspense film or suspense thriller,<br>
+                         is a broad film genre that involves excitement and suspense in the audience.<br>
+                         Tension is created by delaying what the audience sees as inevitable, and is built through situations that are menacing or where escape seems impossible."<br>
+                    },<br>
+                    "Director": {<br>
+                        "Name": "Martin Scorsese",<br>
+                        "Bio": "Martin Scorsese is an American film director, producer and screenwriter. He is recipient of many accolades",<br>
+                        "Birth": "1942-11-17T00:00:00.000Z",<br>
+                        "Death": ""<br>
+                    },<br>
+                    "_id": "620cd5c185ae295fceef981d",<br>
+                    "Title": "Shutter Island",<br>
+                    "Description": "Shutter Island is a 2010 American neo-noir psychological thriller film directed by Martin Scorsese and written by Laeta Kalogridis, 
+                    based on Dennis Lehane's 2003 novel of the same name. Leonardo DiCaprio stars as Deputy U.S. Marshal Edward Teddy Daniels, 
+                    who is investigating a psychiatric facility on Shutter Island after one of the patients goes missing. 
+                    Mark Ruffalo plays his partner and fellow deputy marshal, Ben Kingsley is the facility's lead psychiatrist, Max von Sydow is a German doctor, 
+                    and Michelle Williams is Daniels' wife.",<br>
+                    "ImagePath": "https://www.imdb.com/title/tt1130884/mediaviewer/rm1814907136/?ref_=tt_ov_i",<br>
+                    "Featured": true<br>
+                }
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Get the description of a genre</th>
+                <td>/genre/:Name</td>
+                <td>GET</td>
+                <td>none</td>
+                <td>A JSON object holding the description of the genre like:<br>
+                  "Thriller film, also known as suspense film or suspense thriller,
+                   is a broad film genre that involves excitement and suspense in the audience.
+                   Tension is created by delaying what the audience sees as inevitable,
+                   and is built through situations that are menacing or where escape seems impossible."
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Get data about a director (Bio, Birthyear, Deathyear)</th>
+                <td>/director/:Name</td>
+                <td>GET</td>
+                <td>none</td>
+                <td>A JSON object holding data about the director, structured like:<br>
+                  {<br>
+                    "Name": "Alex Garland",<br>
+                    "Bio": "Alex Garland is an English writer and filmmaker. He rose to prominence as a novelist in the late 1990s with his novel The Beach,<br>
+                     which led some critics to call Garland a key voice of Generation X.",<br>
+                    "Birth": "1970-05-26T00:00:00.000Z",<br>
+                    "Death": ""<br>
+                }
+                </td>
+              </tr>
             </tbody>
           </table>
-        </div>
-       </body>
-</html> 
+</body>
+</html>
