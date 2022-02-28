@@ -1,6 +1,5 @@
 // Importing the modules: mongoose, express, morgan, body-parser, uuid.
 const mongoose = require('mongoose');
-const Models = require('./models.js');
 const express = require('express');
 const morgan = require('morgan');
 const { get } = require('express/lib/response');
@@ -16,10 +15,12 @@ app.use(morgan('common'));
 // Parse incoming request bodies in the middleware.
 app.use(bodyParser.json());
 
-const Movies = Models.movie;
-const Users = Models.user;
+const Models = require('./models.js');
+// Refereing to the models which are defined in models.js.
+const Movies = Models.Movie;
+const Users = Models.User;
 
-mongoose.connect('mongodb://localhost:27017/myFix', {useNewUrlParser: true, useUnifiedToplogy: true});
+mongoose.connect('mongodb://localhost:27017/myFixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Routing.
 // READ.
@@ -64,7 +65,7 @@ app.post('/users', (req, res) => {
 
 //READ: Get all users.
 app.get('/users', (req, res) => {
-    Users.find().then
+    Users.find()
     .then((users) => {
         res.status(201).json(users);
     })
@@ -125,9 +126,9 @@ app.delete('/users/:Username', (req, res) => {
 });
 
 // CREATE: Create new favorite movie of a user.
-app.post('/users/:id/:movieTitle', (req, res) => {
+app.post('/users/:Username/:MovieID', (req, res) => {
     Users.findOneAndUpdate({ Username: req.params.Username }, 
-        { $push: { FavoriteMovies: req.params.movieTitle }
+        { $push: { FavoriteMovies: req.params.MovieID }
     },
     { new: true }, // this line makes sure that the updated document is returned.
     (err, updatedUser) => {
@@ -140,11 +141,12 @@ app.post('/users/:id/:movieTitle', (req, res) => {
     });
 });
 
-app.delete('/users/:Username/:movieTitle', (req, res) => {
+// deletes a movie from a user's list.
+app.delete('/users/:Username/:MovieID', (req, res) => {
     Users.findOneAndUpdate({ Username: req.params.Username }, 
-        { $pull: { FavoriteMovies: req.params.movieTitle }
+        { $pull: { FavoriteMovies: req.params.MovieID }
     },
-    { new: true }, // this line makes sure that the updated document is returned.
+    { new: true }, // this line makes sure that the updated document is returned
     (err, updatedUser) => {
         if (err) {
             console.error(err);
@@ -153,7 +155,7 @@ app.delete('/users/:Username/:movieTitle', (req, res) => {
             res.json(updatedUser);
         }
     });
-}); 
+});
 
 // READ: Get all movies
 app.get('/movies', (req, res) => {
@@ -178,20 +180,8 @@ app.get('/movies/:Title', (req, res) => {
         });
 });
 
-// READ: Get movies by genre.
-app.get('/movies/genres/:genreName', (req, res) => {
-    const { genreName } = req.params;
-    const genre = Movies.find ( movie => movie.Genre === genreName);
-
-    if (genre) {
-        res.status(200).json(genre);
-    } else {
-        res.status(400).send('There is no ge with such name.');
-    }
-})
-
 // READ: Get description of a genre.
-app.get('/movies/genre/:Name', (req, res) => {
+app.get('/movies/genres/:Name', (req, res) => {
     Movies.findOne({ 'Genre.Name': req.params.Name })
         .then((movie) => {
             res.json(movie.Genre.Description);
@@ -202,20 +192,8 @@ app.get('/movies/genre/:Name', (req, res) => {
         });
 })
 
-// READ: Get movies by director.
-app.get('/movies/directors/:directorName', (req, res) => {
-    const { directorName } = req.params;
-    const director = Movies.find ( movie => movie.Director === directorName );
-
-    if (director) {
-        res.status(200).json(director);
-    } else {
-        res.status(400).send('There is no director with such name.');
-    }
-})
-
 // gets information about a director
-app.get('/movies/director/:Name', (req, res) => {
+app.get('/movies/directors/:Name', (req, res) => {
     Movies.findOne({ 'Director.Name': req.params.Name })
         .then((movie) => {
             res.json(movie.Director);
