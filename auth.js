@@ -1,8 +1,7 @@
-const jwtSecret = 'your_jwt_secret'; // Same key as used in the JWTStrategy.
+const jwtSecret = 'your_jwt_secret'; // This has to be the same key used in the JWTStrategy
 
-const req = require('express/lib/request');
 const jwt = require('jsonwebtoken'),
-    passport = require('passport');
+  passport = require('passport');
 
 require('./passport'); // passport.js with HTTP- and JWT-Strategy.
 
@@ -16,21 +15,21 @@ let generateJWTToken = (user) => {
 
 /* POST login. */
 module.exports = (router) => {
-    router.post('/login', req, res => {
-        passport.authenticate('local', {session: false}, (error, user, info) => {
-            if (error || !user) {
-                return res.status(400).json({
-                    message: 'Authentication failed, something is not right.',
-                    user: user
-                });
-            }
-            req.login(user, {session: false}, (error) => {
-                if (error) {
-                    res.send(error);
-                }
-                let token = generateJWTToken(user.toJSON());
-                return res.json({ user, token}); // ES6 shorthand for res.json({ user: user, token: token }).
-            });
-        })(req, res);
-    });
+  router.post('/login', (req, res) => {
+    passport.authenticate('local', { session: false }, (error, user, info) => {
+      if (error || !user) {
+        return res.status(400).json({
+          message: 'Something is not right',
+          user: user
+        });
+      }
+      req.login(user, { session: false }, (error) => {
+        if (error) {
+          res.send(error);
+        }
+        let token = generateJWTToken(user.toJSON());
+        return res.json({ user, token }); // ES6 shorthand for res.json({ user: user, token: token }).
+      });
+    })(req, res);
+  });
 }
