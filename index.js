@@ -39,15 +39,18 @@ app.get("/", (req, res) => {
 // READ: Return all static files in public folder.
 app.use(express.static("public"));
 
-//CREATE: Create new user.
-app.post("/users", passport.authenticate('jwt', { session: false}), (req, res) => {
+/* CREATE: Create new user.
+  Allow new user to register.
+  Mandatory fields: Username, Password, E-mail.
+*/
+app.post("/users", (req, res) => {
   Users.findOne({ Username: req.body.Username })
     .then((user) => {
-      // If the user already exsists, throw error.
+      // If the user already exsists, throw an error.
       if (user) {
-        return res.status(400).send(rep.body.Username + "already exists!");
+        return res.status(400).send(req.body.Username + "already exists!");
       } else {
-        // If the user doesn't exists, a new user document will be vreated in the users collection.
+        // If the user doesn't exists, a new user document will be created in the users collection.
         Users.create({
           Username: req.body.Username,
           Password: req.body.Password,
