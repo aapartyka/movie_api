@@ -17,6 +17,23 @@ const mongoose = require("mongoose");
   const Movies = Models.Movie;
   const Users = Models.User;
 
+// Import CORS (Cross-Origin Resource Sharing).
+const cors = require('cors');
+
+let allowedOrigins= ['http://localhost:8080', 'http://testsite.com'];
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn't found on the list of of allowed origins.
+      let message = 'The CORS policy for this application dosen´t allow access from' + origin;
+      return callback(null, true);
+    }
+    return callback(null, true);
+  }
+})); 
+
+const { check, validationResult } = require('express-validator');
+
 // Import auth.js file.
 let auth = require('./auth')(app);
 
@@ -41,19 +58,35 @@ app.use(express.static("public"));
 
 /* CREATE: Create new user.
   Allow new user to register.
-  Mandatory fields: Username, Password, E-mail.
+  Mandatory fields: Username (min: 4 charakters), Password, E-mail.
 */
-app.post("/users", (req, res) => {
-  Users.findOne({ Username: req.body.Username })
+app.post("/users",
+// Validation logic.
+  [
+    check('Username', 'A Username is required have to have at least four characters.').isLength({min: 4}),
+    check('Username', 'A Username is only allowed to contain alphanumeric characters.').isAlphanumeric,
+    check('Password', 'A password is required!').isEmpty,
+    check('Email', 'The email does not aßßer to be vaild ').isEmail()
+  ], (req, res) => {
+
+  // Check the validation object for errors.
+  let errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  let hashedPassword = Users.hashedPassword(req.params.Password);                                                                                                                                                      
+  Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists.
     .then((user) => {
-      // If the user already exsists, throw an error.
+      // If the user is found, send a response that it already exists.
       if (user) {
         return res.status(400).send(req.body.Username + "already exists!");
       } else {
         // If the user doesn't exists, a new user document will be created in the users collection.
         Users.create({
           Username: req.body.Username,
-          Password: req.body.Password,
+          Password: hashedPassword,
           Email: req.body.Email,
           Birthday: req.body.Birthday,
         })
