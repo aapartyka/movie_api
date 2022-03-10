@@ -6,12 +6,12 @@ const jwt = require('jsonwebtoken'),
 require('./passport'); // passport.js with HTTP- and JWT-Strategy.
 
 let generateJWTToken = (user) => {
-    return jwt.sign(user, jwtSecret, {
-        subject: user.Username, // Username which will be encoded in JWT.
-        expiresIn: '6d', // Specifies the expiration of the JWT token to 6 days.
-        algorithm: 'HS256' // The HMAC (keyed-hash message authentication code) which is used to "sign"/encode the values of the JWT token.
-    });
-}
+  return jwt.sign(user, jwtSecret, {
+    subject: user.Username, // Username which will be encoded in JWT.
+    expiresIn: '6d', // Specifies the expiration of the JWT token to 6 days.
+    algorithm: 'HS256', // The HMAC (keyed-hash message authentication code) which is used to "sign"/encode the values of the JWT token.
+  });
+};
 
 /* POST login. */
 module.exports = (router) => {
@@ -20,7 +20,7 @@ module.exports = (router) => {
       if (error || !user) {
         return res.status(400).json({
           message: 'Something is not right',
-          user: user
+          user: user,
         });
       }
       req.login(user, { session: false }, (error) => {
@@ -32,4 +32,4 @@ module.exports = (router) => {
       });
     })(req, res);
   });
-}
+};
