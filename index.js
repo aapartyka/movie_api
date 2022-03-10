@@ -2,21 +2,22 @@
 const express = require('express');
 const app = express();
 
-// Import middlware libraries: morgan, body-parser, uuid.
+// Import middlware libraries: morgan, body-parser.
 const morgan = require('morgan');
-bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 // Import CORS (Cross-Origin Resource Sharing).
 const cors = require('cors');
+
+// Import mogoose.
+const mongoose = require('mongoose');
 
 // Use body-parser for incoming request bodies in the middleware.
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const { check, validationResult } = require('express-validator');
-
-// Import mogoose.
-const mongoose = require('mongoose');
+// Use morgan for logging the request data.
+app.use(morgan('common'));
 
 let allowedOrigins = [
   'http://localhost:8080',
@@ -40,11 +41,8 @@ app.use(
   })
 );
 
-// Import auth.js file.
+// Import auth.js file. Handels Authentification.
 let auth = require('./auth')(app);
-
-// Use morgan for logging the request data.
-app.use(morgan('common'));
 
 // Conncecting to MongoDB myFixDB.
 mongoose.connect('mongodb://localhost:27017/myFlixDB', {
@@ -52,8 +50,6 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', {
   useUnifiedTopology: true,
 });
 
-// Routing.
-// READ.
 app.get('/', (req, res) => {
   res.send('Welcome to myFilx!');
 });
