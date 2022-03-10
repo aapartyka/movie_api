@@ -12,7 +12,10 @@ let movieSchema = mongoose.Schema({
     Name: String,
     Bio: String,
   },
-  // Add Actors: [String],
+  Writer: [String],
+  Releaseyear: Date,
+  Actors: [String],
+  Rating: [Number],
   ImagePath: String,
   Featured: Boolean,
 });
@@ -23,6 +26,7 @@ let userSchema = mongoose.Schema({
   Email: { type: String, required: true },
   Birthday: Date,
   FavoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
+  Watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
 });
 
 userSchema.statics.hashPassword = (password) => {
