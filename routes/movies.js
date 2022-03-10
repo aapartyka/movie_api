@@ -6,8 +6,11 @@ bodyParser = require('body-parser');
 uuid = require('uuid');
 
 // Import mogoose and refering to the models which are defined in models.js.
-const Models = require('../models.js');
-const Movies = Models.Movie;
+//const Models = require('../models.js');
+//const Movies = Models.Movie;
+
+const movieModel = require('../models/movieModel');
+const Movies = movieModel.Movie;
 
 // Require passport module & import passport.js file.
 const passport = require('passport');
