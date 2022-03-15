@@ -7,9 +7,7 @@ let userSchema = mongoose.Schema({
   Email: { type: String, required: true },
   Birthday: Date,
   FavoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
-  Watchlist: {
-    Movies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
-  },
+  Watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
 });
 
 userSchema.statics.hashPassword = (password) => {
