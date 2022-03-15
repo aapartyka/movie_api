@@ -157,7 +157,7 @@ router
       });
   });
 
-// CREATE: Create new favorite movie of a user.
+// CREATE: Add a new favorite movie of a user.
 router
   .route('/:Username/:MovieID')
   .post(passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -175,7 +175,7 @@ router
       }
     );
   })
-  // deletes a movie from a user's list.
+  // Remove a movie from a user's favoriteMovie list.
   .delete(passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndUpdate(
       { Username: req.params.Username },
@@ -192,11 +192,39 @@ router
     );
   });
 
-//add watchlist routes
-/* 
-    router.route('watchlist/movies/:movieID',
-    .post()
-    .delete()
-  */
+router
+  //CREATE: Add a new movie to watch in a user's watchlist.
+  .route('/:Username/watchlist/:movieID')
+  .post(passport.authenticate('jwt', { session: false }), (req, res) => {
+    Users.findOneAndUpdate(
+      { Username: req.params.Username },
+      { $push: { Watchlist: req.params.movieID } },
+      { new: true },
+      (err, updatedUser) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send('Error');
+        } else {
+          res.json(updatedUser);
+        }
+      }
+    );
+  })
+  // DELETE: Remove a movie from a user's watchlist.
+  .delete(passport.authenticate('jwt', { session: false }), (req, res) => {
+    Users.findOneAndUpdate(
+      { Username: req.params.Username },
+      { pull: { movieID: req.params.movieID } },
+      { new: true },
+      (err, updatedUser) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send('Error');
+        } else {
+          res.json(updatedUser);
+        }
+      }
+    );
+  });
 
 module.exports = router;
