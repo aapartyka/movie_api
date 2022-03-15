@@ -14,7 +14,6 @@ let movieSchema = mongoose.Schema({
   Writer: [String],
   Releaseyear: Date,
   Actors: [String],
-  Rating: [Number],
   ImagePath: String,
   Featured: Boolean,
 });
