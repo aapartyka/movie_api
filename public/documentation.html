@@ -8,12 +8,14 @@
     <title>Document</title>
 </head>
 <body>
+  <div class="container-fluid">
     <h1>myFlix</h1>
     <p>The web application will provide users with access to information about different
-        movies, directors, and genres. Users will be able to sign up, update their
-        personal information, and create a list of their favorite movies.</p>
-
-        <table class="table table-bordered table-responsive">
+        movies, directors, and genres. MyFlix will also provide a release date  some actors which take part in the movie. Users will be able to sign up, update their
+        personal information, and create a list of their favorite movies and add movies to their watchlist.</p>
+ 
+      <div class="table-responsive">
+        <table class="table table-dark table-bordered table-striped table align-middle">
             <thead class="thead-light">
               <tr>
                 <th scope="col">Business Logic</th>
@@ -30,25 +32,20 @@
                 <td>GET</td>
                 <td>None</td>
                 <td>A JSON object holding data about all users, structured like:<br>
-                {<br>
-                    "_id": "620ce8db85ae295fceef982d",<br>
-                    "Name": "Max Musterman",<br>
-                    "Password": "nfkdf-fjvmr-Katze",<br>
-                    "Email": "max.musterman",
-                    "Birthdate": "1950-01-01T00:00:00.000Z",<br>
-                    "favoriteMovies": [<br>
-                        "620cd67885ae295fceef9825",<br>
-                        "620cd68b85ae295fceef9827",<br>
-                        "620cd5c185ae295fceef981d"]<br>
-                  },<br>
-                  {<br>
-                    "_id": "620ce8f185ae295fceef982f",<br>
-                    "Name": "Jane Doe",<br>
-                    "Password": "Hirschkuh",<br>
-                    "Email": "jane.doe@wow.no",<br>
-                    "Birthdate": "1995-11-26T00:00:00.000Z",<br>
-                    "favoriteMovies": []<br>
-                }</td>
+                    {<br>
+                     "_id" : ObjectId("622b19fb2d332027659dc0b4"),<br>
+                     "Username" : "ArnoPartyka",<br>
+                     "Password" : "$2b$10$6IRkR2OJ8QWhUZDdD5/R..vuYesdAX5V4kRJTTGrKeBWAQO6rfi",<br>
+                     "Email" : "arno.partyka@gmx.de",<br>
+                     "Birthday" : ISODate("1995-11-26T00:00:00Z"),<br>
+                     "FavoriteMovies" : [ ],<br>
+                     "Watchlist" : [
+                             ObjectId("62276fca0ad0764fc6054080")
+                     ],<br>
+                     "__v" : 0<br>
+                }<br>
+                {...}
+              </td>
               </tr>
               <tr>
                 <th scope="row">Add a user</th>
@@ -57,19 +54,20 @@
                 <td>A JSON object holding data about a user to add, structured like:
                   {<br>
                     "Username": "testUser1",<br>
-                    "Password": "weakpw",<br>
+                    "Password": "PassWordWhichWillBeHashed",<br>
                     "Email": "testUser@gmail.com",<br>
                     "Birthday": "1955-11-11",<br>
                 }
                 </td>
                 <td>A JSON object holding data about the user that has been just added, structured like:<br>
-                  {
-                    "_id": "61fa66df9526ff993d4b0ab6",
-                    "Username": "testUser1",
-                    "Password": "weakpw",
-                    "Email": "testUser@gmail.com",
-                    "Birthday": "1955-11-11T00:00:00.000Z",
-                    "FavoriteMovies": []
+                  {<br>
+                    "_id": "61fa66df9526ff993d4b0ab6",<br>
+                    "Username": "testUser1",<br>
+                    "Password": "$jr$10$TwLdPQ.UVugS2IFnduclHOax2W5OR8fkL/4..74jfd0lXBv4FpmcZZ4",<br>
+                    "Email": "testUser@gmail.com",<br>
+                    "Birthday": "1955-11-11T00:00:00.000Z",<br>
+                    "FavoriteMovies": [],<br>
+                    "Watchlist" : []<br>
                 }</td>
               </tr>
               <tr>
@@ -79,19 +77,20 @@
                 <td>A JSON object holding data about a user to change data, structured like:<br>
                   {<br>
                     "Username": "testUserPost",<br>
-                    "Password": "TestpwChanged",<br>
+                    "Password": "$2b$10$TwLdPQ.UVugS2IF6rbxKHOax2W5OR8fkL/4..D9ITojXBv4F6804a",<br>
                     "Email": "Test@email.com",<br>
                     "Birthday": "1953-09-01",<br>
                 }</td>
                 <td>A JSON object holding data about users updated data, structured like:<br>
-                  {
-                    "_id": "61fa65249526ff993d4b0ab4",
-                    "Username": "testUserPost",
-                    "Password": "TestpwChanged",
-                    "Email": "Test@email.com",
-                    "Birthday": "1953-09-01T23:00:00.000Z",
-                    "FavoriteMovies": []
-                },</td>
+                  {<br>
+                    "_id": "61fa65249526ff993d4b0ab4",<br>
+                    "Username": "testUserPost",<br>
+                    "Password": "$2b$10$TwLdPQ.UVugS2IF6rbxKHOax2W5OR8fkL/4..D9ITojXBv4F6804a",<br>
+                    "Email": "Test@email.com",<br>
+                    "Birthday": "1953-09-01T23:00:00.000Z",<br>
+                    "FavoriteMovies": [],<br>
+                    "Watchlist" : []<br>
+                }</td>
               </tr>
               <tr>
                 <th scope="row">Remove a user by username</th>
@@ -108,8 +107,22 @@
                 <td>A message indicating whether the movie was successfully added</td>
               </tr>
               <tr>
-                <th scope="row">Remove a movie from user's favorite movies array</th>
+                <th scope="row">Remove a movie from user's favorite movies</th>
                 <td>/users/:Username/movies/:MovieID</td>
+                <td>DELETE</td>
+                <td>none</td>
+                <td>A message indicating whether the movie was successfully removed</td>
+              </tr>
+              <tr>
+                <th scope="row">Add a movie to user's watchlist</th>
+                <td>/users/:Username/watchlist/:movieID</td>
+                <td>POST</td>
+                <td>none</td>
+                <td>A message indicating whether the movie was successfully added</td>
+              </tr>
+              <tr>
+                <th scope="row">Remove a movie from user's watchlist</th>
+                <td>/users//:Username/watchlist/:movieID</td>
                 <td>DELETE</td>
                 <td>none</td>
                 <td>A message indicating whether the movie was successfully removed</td>
@@ -120,50 +133,72 @@
                 <td>GET</td>
                 <td>none</td>
                 <td>A JSON object holding data about all movies with a structure like:<br>
-                  [<br>
                   {<br>
-                    "Genre": {<br>
-                        "Name": "Thriller",<br>
-                        "Description": "Thriller film, also known as suspense film or suspense thriller,<br>
-                         is a broad film genre that involves excitement and suspense in the audience.<br>
-                         Tension is created by delaying what the audience sees as inevitable, and is built through situations that are menacing or where escape seems impossible."<br>
+                    "_id" : ObjectId("62276fca0ad0764fc6054080"),<br>
+                    "Title" : "Taxi Driver",<br>
+                    "Description" : "Taxi Driver is a 1976 American film directed by Martin Scorsese, written by Paul Schrader,
+                     and starring Robert De Niro, Jodie Foster, Cybill Shepherd, Harvey Keitel, Peter Boyle, Leonard Harris, and Albert Brooks. 
+                     Set in a decaying and morally bankrupt New York City following the Vietnam War, the film follows Travis Bickle (De Niro), 
+                     a taxi driver and veteran, and his deteriorating mental state as he works nights in the city.",<br>
+                    "Genre" : {<br>
+                            "Name" : "Drama",<br>
+                            "Description" : "Focused on emotions and defined by conflict, often looking to reality rather than sensationalism."<br>
                     },<br>
-                    "Director": {<br>
-                        "Name": "Martin Scorsese",<br>
-                        "Bio": "Martin Scorsese is an American film director, producer and screenwriter. He is recipient of many accolades",<br>
-                        "Birth": "1942-11-17T00:00:00.000Z",<br>
-                        "Death": ""<br>
+                    "Director" : {<br>
+                            "Name" : "Martin Scorsese",<br>
+                            "Bio" : "Martin Scorsese is an American film director, producer, and screenwriter. He is the recipient of many accolades, including nine Academy Award nominations",
+                            "Birth" : ISODate("1942-11-17T00:00:00Z"),<br>
+                            "Death" : ""<br>
                     },<br>
-                    "_id": "620cd5c185ae295fceef981d",<br>
-                    "Title": "Shutter Island",<br>
-                    "Description": "Shutter Island is a 2010 American neo-noir psychological thriller film directed by Martin Scorsese and written by Laeta Kalogridis, 
-                    based on Dennis Lehane's 2003 novel of the same name. Leonardo DiCaprio stars as Deputy U.S. Marshal Edward Teddy Daniels, 
-                    who is investigating a psychiatric facility on Shutter Island after one of the patients goes missing. 
-                    Mark Ruffalo plays his partner and fellow deputy marshal, Ben Kingsley is the facility's lead psychiatrist, Max von Sydow is a German doctor, 
-                    and Michelle Williams is Daniels' wife.",<br>
-                    "ImagePath": "https://www.imdb.com/title/tt1130884/mediaviewer/rm1814907136/?ref_=tt_ov_i",<br>
-                    "Featured": true<br>
-                },<br>
-                  {
-                      "Genre": {<br>
-                          "Name": "Thriller",<br>
-                          "Description": "Thriller film, also known as suspense film or suspense thriller,
-                           is a broad film genre that involves excitement and suspense in the audience. Tension is created by delaying what the audience sees as inevitable,
-                           and is built through situations that are menacing or where escape seems impossible."<br>
-                      },
-                      "Director": {<br>
-                          "Name": "Martin Scorsese",
-                          "Bio": "Martin Scorsese is an American film director, producer and screenwriter. He is recipient of many accolades",<br>
-                          "Birth": "1942-11-17T00:00:00.000Z",<br>
-                          "Death": ""<br>
-                      },
-                      "_id": "620cd5c185ae295fceef981d",<br>
-                      "Title": "Shutter Island",<br>
-                      "Description": "Shutter Island is a 2010 American neo-noir psychological thriller film directed by Martin Scorsese and written by Laeta Kalogridis, based on Dennis Lehane's 2003 novel of the same name. Leonardo DiCaprio stars as Deputy U.S. Marshal Edward Teddy Daniels, who is investigating a psychiatric facility on Shutter Island after one of the patients goes missing. Mark Ruffalo plays his partner and fellow deputy marshal, Ben Kingsley is the facility's lead psychiatrist, Max von Sydow is a German doctor, and Michelle Williams is Daniels' wife.",
-                      "ImagePath": "https://www.imdb.com/title/tt1130884/mediaviewer/rm1814907136/?ref_=tt_ov_i",<br>
-                      "Featured": true<br>
-                  },<br>
-                  ]
+                    "Writer" : [<br>
+                            "Paul Shrader"<br>
+                    ],<br>
+                    "ReleaseYear" : ISODate("1976-02-06T00:00:00Z"),<br>
+                    "Actors" : [
+                            "Robert De Niro",<br>
+                            "Jodie Foster",<br>
+                            "Cybill Shepherd",<br>
+                            "Albert Brooks",<br>
+                            "Diahnne Abbott"<br>
+                    ],
+                    "ImagePath" : "https://www.imdb.com/title/tt0075314/?ref_=fn_al_tt_4",<br>
+                    "Featured" : false<br>
+            }<br>
+            {<br>
+                    "_id" : ObjectId("62276fd80ad0764fc6054081"),<br>
+                    "Title" : "The Wolf of Wall Street",<br>
+                    "Description" : "The Wolf of Wall Street is a 2013 American biographical crime black comedy film directed by Martin Scorsese
+                     and written by Terence Winter, based on the 2007 memoir by Jordan Belfort. 
+                     It recounts Belfort's perspective on his career as a stockbroker in New York City and how his firm, Stratton Oakmont, engaged in rampant 
+                     corruption and fraud on Wall Street, which ultimately led to his downfall.",<br>
+                    "Genre" : {<br>
+                            "Name" : "Comedy",<br>
+                            "Description" : "Comedy is a genre of film in which the main emphasis is on humor.
+                             These films are designed to make the audience laugh through amusement and most often work by exaggerating characteristics for humorous effect."<br>
+                    },<br>
+                    "Director" : {<br>
+                            "Name" : "Martin Scorsese",<br>
+                            "Bio" : "Martin Scorsese is an American film director, producer, and screenwriter. He is the recipient of many accolades, 
+                            including nine Academy Award nominations",<br>
+                            "Birth" : ISODate("1942-11-17T00:00:00Z"),
+                            "Death" : ""<br>
+                    },<br>
+                    "Writer" : [<br>
+                            "Teerence Winter",<br>
+                            "Jordan Belfort"<br>
+                    ],<br>
+                    "ReleaseYear" : ISODate("2013-12-25T00:00:00Z"),<br>
+                    "Actors" : [<br>
+                            "Leondaro DiCaprio",<br>
+                            "Jonah Hill",<br>
+                            "Margot Robbie",<br>
+                            "Rob Reiner",<br>
+                            "Kyle Chandler"<br>
+                    ],<br>
+                    "ImagePath" : "https://www.imdb.com/title/tt0993846/mediaviewer/rm2842940160/?ref_=tt_ov_i",<br>
+                    "Featured" : true<br>
+            }<br>
+            {...}
                 </td>
               </tr>
               <tr>
@@ -173,28 +208,39 @@
                 <td>none</td>
                 <td>A JSON object holding data about the movie like:<br>
                   {<br>
-                    "Genre": {<br>
-                        "Name": "Thriller",<br>
-                        "Description": "Thriller film, also known as suspense film or suspense thriller,<br>
-                         is a broad film genre that involves excitement and suspense in the audience.<br>
-                         Tension is created by delaying what the audience sees as inevitable, and is built through situations that are menacing or where escape seems impossible."<br>
+                    "_id" : ObjectId("62276fbc0ad0764fc605407f"),<br>
+                    "Title" : "Star Wars V - The Empire Strikes back",<br>
+                    "Description" : "The Empire Strikes Back (also known as Star Wars: Episode V – The Empire Strikes Back) is a 1980 American epic space<br>
+                     opera film directed by Irvin Kershner, with a screenplay by Leigh Brackett and Lawrence Kasdan, based on a story by George Lucas.<br>
+                      The sequel to Star Wars (1977), it is the second film in the Star Wars film series and the fifth chronological chapter of the Skywalker Saga.",<br>
+                    "Genre" : {<br>
+                            "Name" : "Sci-Fi",<br>
+                            "Description" : "Science fiction films are defined by a combination of imaginative speculation and a scientific or technological premise,<br>
+                             making use of the changes and trajectory of technology and science. This genre often incorporates space, biology,<br>
+                              energy, time, and any other observable science."<br>
                     },<br>
-                    "Director": {<br>
-                        "Name": "Martin Scorsese",<br>
-                        "Bio": "Martin Scorsese is an American film director, producer and screenwriter. He is recipient of many accolades",<br>
-                        "Birth": "1942-11-17T00:00:00.000Z",<br>
-                        "Death": ""<br>
+                    "Director" : {<br>
+                            "Name" : "Irvin Kershner",<br>
+                            "Bio" : "Irvin Kershner  was an American director, actor, and producer of film and television.",<br>
+                            "Birth" : ISODate("1923-04-29T00:00:00Z"),<br>
+                            "Death" : ISODate("2012-11-27T00:00:00Z")<br>
                     },<br>
-                    "_id": "620cd5c185ae295fceef981d",<br>
-                    "Title": "Shutter Island",<br>
-                    "Description": "Shutter Island is a 2010 American neo-noir psychological thriller film directed by Martin Scorsese and written by Laeta Kalogridis, 
-                    based on Dennis Lehane's 2003 novel of the same name. Leonardo DiCaprio stars as Deputy U.S. Marshal Edward Teddy Daniels, 
-                    who is investigating a psychiatric facility on Shutter Island after one of the patients goes missing. 
-                    Mark Ruffalo plays his partner and fellow deputy marshal, Ben Kingsley is the facility's lead psychiatrist, Max von Sydow is a German doctor, 
-                    and Michelle Williams is Daniels' wife.",<br>
-                    "ImagePath": "https://www.imdb.com/title/tt1130884/mediaviewer/rm1814907136/?ref_=tt_ov_i",<br>
-                    "Featured": true<br>
-                }
+                    "Writer" : [<br>
+                            "George Lucas",<br>
+                            "Leigh Brackett",<br>
+                            "Lawrence Kasdan"<br>
+                    ],<br>
+                    "ReleaseYear" : ISODate("1980-06-20T00:00:00Z"),<br>
+                    "Actors" : [<br>
+                            "Mark Hamil",<br>
+                            "Harrison Ford",<br>
+                            "Carrie Fisher",<br>
+                            "Billy Dee Williams",<br>
+                            "Anthony Daniels"<br>
+                    ],<br>
+                    "ImagePath" : "https://www.imdb.com/title/tt0080684/mediaviewer/rm3114097664/?ref_=tt_ov_i",<br>
+                    "Featured" : true<br>
+            }<br>
                 </td>
               </tr>
               <tr>
@@ -203,10 +249,12 @@
                 <td>GET</td>
                 <td>none</td>
                 <td>A JSON object holding the description of the genre like:<br>
+                  {<br>
                   "Thriller film, also known as suspense film or suspense thriller,
                    is a broad film genre that involves excitement and suspense in the audience.
                    Tension is created by delaying what the audience sees as inevitable,
-                   and is built through situations that are menacing or where escape seems impossible."
+                   and is built through situations that are menacing or where escape seems impossible."<br>
+                  }
                 </td>
               </tr>
               <tr>
@@ -226,5 +274,7 @@
               </tr>
             </tbody>
           </table>
+      </div>
+    </div>
 </body>
 </html>
