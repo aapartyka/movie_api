@@ -19,11 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use morgan for logging the request data.
 app.use(morgan('common'));
 
-let allowedOrigins = [
-  'http://localhost:8080',
-  'http://testsite.com',
-  'http://localhost:1234',
-];
+let allowedOrigins = ['http://localhost:8080'];
 
 app.use(
   cors({
