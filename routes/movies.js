@@ -16,7 +16,7 @@ const Movies = movieModel.Movie;
 const passport = require('passport');
 require('../passport');
 
-// READ: Get all movies
+// READ: HTTP get request -> Get all movies.
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
@@ -32,7 +32,7 @@ router.get(
   }
 );
 
-// READ: Get movies by title.
+// READ: HTTP get request -> Get movies by title.
 router.get(
   '/:Title',
   passport.authenticate('jwt', { session: false }),
@@ -47,7 +47,7 @@ router.get(
   }
 );
 
-// READ: Get description of a genre.
+// READ: HTTP get request -> Get description of a genre.
 router.get(
   '/genres/:Name',
   passport.authenticate('jwt', { session: false }),
@@ -63,7 +63,7 @@ router.get(
   }
 );
 
-// READ: Get information about a director.
+// READ: HTTP get request -> Get information about a director.
 router.get(
   '/directors/:Name',
   passport.authenticate('jwt', { session: false }),
