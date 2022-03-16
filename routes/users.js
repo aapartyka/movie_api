@@ -17,7 +17,7 @@ require('../passport');
 
 router
   .route('')
-  //READ: Get all users.
+  //READ: HTTP get request -> Get all users.
   .get(passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.find()
       .then((users) => {
@@ -28,7 +28,7 @@ router
         res.status(500).send('Error' + err);
       });
   })
-  /* CREATE: Create new user.
+  /* CREATE: HTTP post request -> Create new user.
   Allow new user to register.
   Mandatory fields: Username (min: 5 charakters), Password, E-mail. */
   .post(
@@ -83,7 +83,7 @@ router
 
 router
   .route('/:Username')
-  // READ: Get a user by username
+  // READ: HTTP get request -> Get a user by username.
   .get(passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOne({ Username: req.params.Username })
       .then((user) => {
@@ -94,7 +94,7 @@ router
         res.status(500).send('Error: ' + err);
       });
   })
-  // UPDATE: Update user information.
+  // UPDATE: HTTP put request -> Update user information.
   .put(
     passport.authenticate('jwt', { session: false }),
     [
@@ -107,7 +107,7 @@ router
         'A Username is only allowed to contain alphanumeric characters.'
       ).isAlphanumeric,
       check('Password', 'A password is required!').not().isEmpty,
-      check('Email', 'The email does not aßßer to be vaild ').isEmail(),
+      check('Email', 'The email does not seem to be vaild ').isEmail(),
     ],
     (req, res) => {
       // Check the validation object for errors.
@@ -116,13 +116,15 @@ router
       if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
       }
+
       (req, res) => {
+        let hashedPassword = Users.hashPassword(req.body.Password);
         Users.findOneAndUpdate(
           { Username: req.params.Username },
           {
             $set: {
               Username: req.body.Username,
-              Password: req.body.Password,
+              Password: hashedPassword,
               Email: req.body.Email,
               Birthday: req.body.Birthday,
             },
@@ -140,7 +142,7 @@ router
       };
     }
   )
-  // DELETE: Delete user by username.
+  // DELETE: HTTP delete request -> Delete user by username.
   .delete(passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndDelete({ Username: req.params.Username })
       .then((user) => {
@@ -157,7 +159,7 @@ router
       });
   });
 
-// CREATE: Add a new favorite movie of a user.
+// CREATE: HTTP post request -> Add a new favorite movie of a user.
 router
   .route('/:Username/:MovieID')
   .post(passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -175,7 +177,7 @@ router
       }
     );
   })
-  // Remove a movie from a user's favoriteMovie list.
+  //DELETE: HTTP delete request -> Remove a movie from a user's favorite movie list.
   .delete(passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndUpdate(
       { Username: req.params.Username },
@@ -193,7 +195,7 @@ router
   });
 
 router
-  //CREATE: Add a new movie to watch in a user's watchlist.
+  //CREATE: HTTP post request -> Add a new movie to watch in a user's watchlist.
   .route('/:Username/watchlist/:movieID')
   .post(passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndUpdate(
@@ -210,11 +212,11 @@ router
       }
     );
   })
-  // DELETE: Remove a movie from a user's watchlist.
+  // DELETE: HTTP delete request -> Remove a movie from a user's watchlist.
   .delete(passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndUpdate(
       { Username: req.params.Username },
-      { pull: { movieID: req.params.movieID } },
+      { pull: { Watchlist: req.params.movieID } },
       { new: true },
       (err, updatedUser) => {
         if (err) {
