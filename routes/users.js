@@ -30,11 +30,11 @@ router
   })
   /* CREATE: HTTP post request -> Create new user.
   Allow new user to register.
-  Mandatory fields: Username (min: 5 charakters), Password, E-mail. */
+  Mandatory fields: Username (min: 4 charakters), Password, E-mail. */
   .post(
     // Validation logic.
     [
-      check('Username', 'Username is required').isLength({ min: 5 }),
+      check('Username', 'Username is required').isLength({ min: 4 }),
       check(
         'Username',
         'Username contains non alphanumeric characters - not allowed.'
@@ -98,48 +98,37 @@ router
   .put(
     passport.authenticate('jwt', { session: false }),
     [
+      check('Username', 'Username is required').isLength({ min: 4 }),
       check(
         'Username',
-        'A Username is required have to have at least four characters.'
-      ).isLength({ min: 4 }),
-      check(
-        'Username',
-        'A Username is only allowed to contain alphanumeric characters.'
-      ).isAlphanumeric,
-      check('Password', 'A password is required!').not().isEmpty,
-      check('Email', 'The email does not seem to be vaild ').isEmail(),
+        'Username contains non alphanumeric characters - not allowed.'
+      ).isAlphanumeric(),
+      check('Password', 'Password is required').not().isEmpty(),
+      check('Email', 'Email does not appear to be valid').isEmail(),
     ],
+
     (req, res) => {
-      // Check the validation object for errors.
-      let errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
-      }
-
-      (req, res) => {
-        let hashedPassword = Users.hashPassword(req.body.Password);
-        Users.findOneAndUpdate(
-          { Username: req.params.Username },
-          {
-            $set: {
-              Username: req.body.Username,
-              Password: hashedPassword,
-              Email: req.body.Email,
-              Birthday: req.body.Birthday,
-            },
+      let hashedPassword = Users.hashPassword(req.body.Password);
+      Users.findOneAndUpdate(
+        { Username: req.params.Username },
+        {
+          $set: {
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
           },
-          { new: true }, // This line makes sure that the updated document is returned.
-          (err, updatedUser) => {
-            if (err) {
-              console.error(err);
-              res.status(500).send('Error: ' + err);
-            } else {
-              res.json(updatedUser);
-            }
+        },
+        { new: true }, // This line makes sure that the updated document is returned.
+        (err, updatedUser) => {
+          if (err) {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+          } else {
+            res.json(updatedUser);
           }
-        );
-      };
+        }
+      );
     }
   )
   // DELETE: HTTP delete request -> Delete user by username.
@@ -216,7 +205,7 @@ router
   .delete(passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndUpdate(
       { Username: req.params.Username },
-      { pull: { Watchlist: req.params.movieID } },
+      { $pull: { Watchlist: req.params.movieID } },
       { new: true },
       (err, updatedUser) => {
         if (err) {
