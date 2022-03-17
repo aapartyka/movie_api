@@ -60,14 +60,14 @@ app.get('/', (req, res) => {
   res.send('Welcome to myFilx!');
 });
 
-// READ: Return all static files in public folder.
-app.use(express.static('public'));
-
 const userRouter = require('./routes/users');
 app.use('/users', userRouter);
 
 const movieRouter = require('./routes/movies');
 app.use('/movies', movieRouter);
+
+// READ: Return all static files in public folder.
+app.use(express.static('public'));
 
 // Error handling/logging.
 app.use((err, req, res, next) => {
