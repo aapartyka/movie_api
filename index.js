@@ -19,7 +19,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use morgan for logging the request data.
 app.use(morgan('common'));
 
-let allowedOrigins = ['http://localhost:8080'];
+let allowedOrigins = [
+  'http://localhost:8080',
+  'https://myflixapi-ap.herokuapp.com/',
+];
 
 app.use(
   cors({
