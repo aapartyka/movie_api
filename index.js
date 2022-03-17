@@ -21,6 +21,7 @@ app.use(morgan('common'));
 
 let allowedOrigins = [
   'http://localhost:8080',
+  'http://localhost:1234',
   'https://myflixandchill.herokuapp.com/',
 ];
 
