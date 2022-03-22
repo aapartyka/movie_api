@@ -19,27 +19,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use morgan for logging the request data.
 app.use(morgan('common'));
 
-let allowedOrigins = [
-  'http://localhost:8080',
-  'http://localhost:1234',
-  'https://myflixandchill.herokuapp.com/',
-];
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        // If a specific origin isn't found on the list of of allowed origins.
-        let message =
-          'The CORS policy for this application dosen´t allow access from' +
-          origin;
-        return callback(null, true);
-      }
-      return callback(null, true);
-    },
-  })
-);
+//Allow everyone to access the api.
+app.use(cors());
 
 // Import auth.js file. Handels Authentification.
 let auth = require('./auth')(app);
