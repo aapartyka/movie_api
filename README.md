@@ -61,7 +61,7 @@ You can view the full endpoint documentation of the api on:
 ## Demo
 
 The API is deployed to Heroku
-### <a href="https://myflixandchill.herokuapp.com/">LIVE DEMO</a>
+### <a href="https://myflixandchill.netlify.app/">LIVE DEMO</a>
 
 To test the endpoints I recommand using Postman, but every other tool like RapidAPI API Testing Paw, Apigee or Assertible etc. works fine.
 
